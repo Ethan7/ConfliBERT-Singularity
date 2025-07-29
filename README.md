@@ -215,7 +215,7 @@ Below is an example using 8 GPUs. We have provided our parameters in the Appendi
 # Fine-tuning:
 
 ### Note:
-For high-powered PCs without a modern GPU use finetune_data_cpu.py, and for traditional laptops without a modern GPU use finetune_data_cpu_low.py
+For high-powered PCs without a modern GPU use finetune_data_cpu.py, and for traditional laptops (RAM < 32GB) without a modern GPU use finetune_data_cpu_low.py
 
 ## Fine-tuning: Using Docker
 ### Installation:
@@ -248,9 +248,6 @@ singularity pull library://ethan/ethan/conflibert.sif:latest
 ```bash
 singularity exec --nv conflibert.sif python3 finetune_data.py
 ```
-
-### Note:
-For high-powered PCs without a GPU use finetune_data_cpu.py, and for traditional laptops without a GPU use finetune_data_cpu_low.py
 
 ## Citation
 
