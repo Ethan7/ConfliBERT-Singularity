@@ -212,6 +212,45 @@ Below is an example using 8 GPUs. We have provided our parameters in the Appendi
 	--fp16 True --weight_decay=0.01
 ```
 
+# Fine-tuning:
+
+### Note:
+For high-powered PCs without a modern GPU use finetune_data_cpu.py, and for traditional laptops without a modern GPU use finetune_data_cpu_low.py
+
+## Fine-tuning: Using Docker
+### Installation:
+```bash
+#On linux:
+sudo apt update
+sudo apt install docker
+#On Windows:
+#Download and install the docker desktop installer from this website:
+#https://www.docker.com/products/docker-desktop/
+#On Both:
+docker pull zawad1879/conflibert:latest
+docker create --gpus all --name conflibert_container zawad1879/conflibert:latest
+```
+### Run container:
+```bash
+docker exec conflibert_container python3 finetune_data.py
+```
+
+## Fine-tuning: Using Singularity on Linux
+### Installation:
+```bash
+sudo apt update
+#Download the singularity installer here (This version uses ubuntu version 24 noble):
+#https://github.com/sylabs/singularity/releases/download/v4.3.2/singularity-ce_4.3.2-noble_amd64.deb
+sudo dpkg -i singularity-ce_4.3.2-noble_amd64.deb
+singularity pull library://ethan/ethan/conflibert.sif:latest
+```
+### Run container:
+```bash
+singularity exec --nv conflibert.sif python3 finetune_data.py
+```
+
+### Note:
+For high-powered PCs without a GPU use finetune_data_cpu.py, and for traditional laptops without a GPU use finetune_data_cpu_low.py
 
 ## Citation
 
