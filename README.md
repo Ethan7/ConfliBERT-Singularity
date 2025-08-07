@@ -222,7 +222,7 @@ For high-powered PCs without a modern GPU use finetune_data_cpu.py, and for trad
 ```bash
 #On linux:
 sudo apt update
-sudo apt install docker
+sudo apt install docker.io
 #On Windows:
 #Download and install the docker desktop installer from this website:
 #https://www.docker.com/products/docker-desktop/
