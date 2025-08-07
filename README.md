@@ -212,12 +212,12 @@ Below is an example using 8 GPUs. We have provided our parameters in the Appendi
 	--fp16 True --weight_decay=0.01
 ```
 
-# Fine-tuning:
+# Containerized Evaluation:
 
 ### Note:
 For high-powered PCs without a modern GPU use finetune_data_cpu.py, and for traditional laptops (RAM < 32GB) without a modern GPU use finetune_data_cpu_low.py
 
-## Fine-tuning: Using Docker
+## Evaluation: Using Docker
 ### Installation:
 ```bash
 #On linux:
@@ -228,15 +228,15 @@ sudo apt install docker.io
 #https://www.docker.com/products/docker-desktop/
 #On Both:
 docker pull zawad1879/conflibert:latest
-docker create --gpus all --name conflibert_container zawad1879/conflibert:latest
+docker create --gpus all --name conflibert_container zawad1879/conflibert:latest #This command may require admin privileges (sudo)
 ```
 ### Run container:
 ```bash
 docker start conflibert_container
-docker exec conflibert_container python3 finetune_data.py
+docker exec conflibert_container CUDA_VISIBLE_DEVICES=0 python finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
 ```
 
-## Fine-tuning: Using Singularity on Linux
+## Evaluation: Using Singularity on Linux
 ### Installation:
 ```bash
 sudo apt update
@@ -250,7 +250,7 @@ singularity pull library://ethan/ethan/conflibert.sif:latest
 ### Run container:
 ```bash
 #You can add or remove the nv flag depending on whether you will be using NVIDIA graphics card(s).
-singularity exec --nv conflibert.sif python3 finetune_data.py
+singularity exec --nv conflibert.sif python finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
 ```
 
 ## Citation
