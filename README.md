@@ -240,9 +240,11 @@ docker exec conflibert_container python3 finetune_data.py
 ### Installation:
 ```bash
 sudo apt update
-#Download the singularity installer here (This version uses ubuntu version 24 noble):
+#Download the singularity installer for your linux version here (This version uses ubuntu version 24 noble):
 #https://github.com/sylabs/singularity/releases/download/v4.3.2/singularity-ce_4.3.2-noble_amd64.deb
-sudo dpkg -i singularity-ce_4.3.2-noble_amd64.deb
+#To find more versions follow the link here:
+#https://github.com/sylabs/singularity/releases
+sudo dpkg -i singularity-ce_4.3.2-noble_amd64.deb #You can replace this with your version if it's different
 singularity pull library://ethan/ethan/conflibert.sif:latest
 ```
 ### Run container:
