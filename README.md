@@ -232,6 +232,7 @@ docker create --gpus all --name conflibert_container zawad1879/conflibert:latest
 ```
 ### Run container:
 ```bash
+docker start conflibert_container
 docker exec conflibert_container python3 finetune_data.py
 ```
 
@@ -246,6 +247,7 @@ singularity pull library://ethan/ethan/conflibert.sif:latest
 ```
 ### Run container:
 ```bash
+#You can add or remove the nv flag depending on whether you will be using NVIDIA graphics card(s).
 singularity exec --nv conflibert.sif python3 finetune_data.py
 ```
 
