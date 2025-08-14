@@ -228,12 +228,13 @@ sudo apt install docker.io
 #https://www.docker.com/products/docker-desktop/
 #On Both:
 docker pull zawad1879/conflibert:latest
-docker create --gpus all --name conflibert_container zawad1879/conflibert:latest #This command may require admin privileges (sudo)
+#Don't use "--gpus all" if you'll be running the cpu version of the model (you don't have a gpu)
+docker create --gpus all --name conflibert_container zawad1879/conflibert:latest tail -f /dev/null #This command may require admin privileges (sudo)
 ```
 ### Run container:
 ```bash
 docker start conflibert_container
-docker exec conflibert_container CUDA_VISIBLE_DEVICES=0 python finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
+docker exec conflibert_container python3 finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
 ```
 
 ## Evaluation: Using Singularity on Linux
@@ -250,7 +251,7 @@ singularity pull library://ethan/ethan/conflibert.sif:latest
 ### Run container:
 ```bash
 #You can add or remove the nv flag depending on whether you will be using NVIDIA graphics card(s).
-singularity exec --nv conflibert.sif python finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
+singularity exec --nv conflibert.sif python3 finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
 ```
 
 ## Citation
