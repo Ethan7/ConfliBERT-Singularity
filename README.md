@@ -212,7 +212,7 @@ Below is an example using 8 GPUs. We have provided our parameters in the Appendi
 	--fp16 True --weight_decay=0.01
 ```
 
-# Containerized Evaluation:
+## Containerized Evaluation:
 
 ### Note:
 For high-powered PCs without a modern GPU use finetune_data_cpu.py, and for traditional laptops (RAM < 32GB) without a modern GPU use finetune_data_cpu_low.py
@@ -236,6 +236,9 @@ docker create --gpus all --name conflibert_container zawad1879/conflibert:latest
 docker start conflibert_container
 docker exec conflibert_container python3 finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
 ```
+
+### More Info:
+More info can be found here: https://github.com/shreyasmeher/ConfliBERT-docker
 
 ## Evaluation: Using Singularity on Linux
 ### Installation:
