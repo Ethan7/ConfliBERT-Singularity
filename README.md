@@ -254,7 +254,7 @@ singularity pull library://ethan/ethan/conflibert.sif:latest
 ### Run container:
 ```bash
 #You can add or remove the nv flag depending on whether you will be using NVIDIA graphics card(s).
-singularity exec --nv conflibert.sif python3 finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
+singularity exec --nv --fakeroot --writable conflibert.sif bash -c "cd /app; python3 finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch"
 ```
 
 ## Citation
