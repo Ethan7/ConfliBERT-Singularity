@@ -1,0 +1,79 @@
+Documented steps I took to fix the finetuning script to work on low-powered laptops
+ - found that the low end of RAM usage is around 4 or 5 GB
+ - found that the RAM usage is dependent on a multiplication of the max_seq_length and the batch_size
+ - modified the script everywhere where batch_size is described in a new version of the script so that it is limited to 2024/max_seq_length, thus limiting the ram usage to the minimum possible while maintaining the most performance
+ - changed it so the batch_size is only modified once in the main function to simplify and ensure that it reaches any downstream scripts that I might not be aware of
+ - While this has gotten the script working on my 16GB laptop, I can't be sure it will work on 8GB laptops because of overhead
+
+Documented steps I took to solve singularity files
+Started with ChatGPT
+ - asked it how to build an image
+ - asked it how to build an image based on a dockerimage
+ - asked it how to build an image based on a GitHub
+ - asked it how to convert our existing dockerfile into a Singularity file
+ - built the Singularity image using the GitHub latest link
+ - ran the Singularity image, the python file was having errors on my machine, could be because of a lack of GPU on my laptop
+ - rebuilt the image to start by running bash
+ - fixed path to bash in singularity image
+ - realized that when running the singularity image it mounts my current directory and sends me there when bash gets run
+ - From there I tried running the script and get there error, 'NameError: name 'disclaim_key_flags' is not defined'
+ - Set this aside temporarily
+
+Added low power finetuning script to the docker image
+
+Documented steps I took to add instructions to conflibert finetuning
+ - committed several versions of the instructions to a patch branch on my GitHub
+ - submitted a pull request to merge with the main project
+ - continued to commit versions
+ - submitted pull request
+ - pull request merged
+
+Niamat added the following to each script:
+import multiprocessing as mp
+mp.set_start_method("spawn", force=True)
+
+This fixed the problem where the finetuning script would fail after finishing the first epoch.
+
+Documented steps I took following this
+ - I found that the finetuning script now failed when I tried to create a container and then start it
+ - I found that this was because the docker no longer hanged at bash waiting for a program to be executed
+ - I found that docker run -it still worked perfectly fine, which told me that in interactive shell could get it to hang correctly
+ - I asked Niamat and added tail -f /dev/null to the docker create command in order to get it to hang when I run docker start, so I could use docker exec on the container again.
+ - I managed to get the gpu version working on my desktop
+ - The CPU version could run but was still failing after finishing the epochs for some reason.
+ - Talked with Niamat, he found a that the use_cuda flag wasn't being set when using the report_per_epoch flag, and fixed some piece of code
+ - Run the CPU version again, this time with multiple different datasets and without the report per epoch flag
+ - Taking a break from getting it to work locally
+
+Creating singularity builds in order to test running the model on the Ganymede2 server and later Juno server
+
+Documented steps
+ - I built a new version of the singularity image
+ - I uploaded it to the Ganymede server using singularity pull, and tried running it but it failed due to "python not being in PATH"
+ - I tried finding a way to run python from the singularity image
+ - I built it again without the docker image, but it kept failing to pull the GitHub data because Zawad's version of conflibert is only accessible to him
+ - So I built it again without the GitHub data, but instead based on the docker image, but I started getting this error: FATAL: Unable to push image to library: upload image blob failed: unexpected http status 403
+ - I went back to building based on the docker image but trying change the runscript so it runs python from within the container, but I'm still getting the error
+ - In future through much more building (8 different singularity files) and testing I managed to find that my laptop always runs into the error:
+NameError: name 'disclaim_key_flags' is not defined
+ - Whereas my desktop/Ganymede/juno always run into one of two errors when running the CPU version:
+ImportError: cannot import name 'XLNetSequenceSummary' from 'transformers.models.xlnet.modeling_xlnet'
+OR
+RuntimeError: File cache_dir/cached_train_bert_512_2_2 cannot be opened
+ - So I started running the GPU version, but I found that my desktop despite having a GPU with access to CUDA failed to access the GPU for the script because there's some type of compatibility problem between WSL2 and singularity
+ - So I tried running the GPU version on the juno server, but was consistently stopped, and I've been in contact with Sasmita to try and run it.
+ - Then I tried running the GPU version on the Ganymede2 server, but was unable to get access to any of the gpu nodes
+ - Then I tried running the GPU version on my Linux Virtual Box system, but found out that the software I was using doesn't get access to the GPU
+ - Then I eventually figured out the problem with my batch job submission request script for the juno server, fixed it and was able to test the GPU version, which failed in a similar manner to the CPU version
+ - Then I worked with Niamat to determine a way forwards with testing the CPU version by altering the singularity build with instructions from claude.ai
+ - Then I iterated with claude.ai 7 times creating different builds, then iterated in the same way on the flags used the run the build, until finally landing on a combination of versions for the transformers and simpletransformers libraries which worked as well as using the sandbox and fakeroot flags, which allowed me to run the finetuning script in its entirety
+ - I then tested the GPU version with the same build and was able to run it as well on the juno server
+ - After subsequent re-runs of the GPU version on the juno server, I found that the GPU version falls back to using the CPU, and is giving warnings such as "WARNING: Skipping mount /usr/bin/nvidia-smi [files]: /usr/bin/nvidia-smi doesn't exist in container" related to the linking with the Nvidia libraries it has.
+ - Then I tried building the GPU version on the juno server with a GPU node, and it managed not to mention falling back to the CPU node, but it still gives the warning, and when running I get "Running in CPU-only mode. Training will be slower but compatible with systems without GPU."
+
+Finalizing the singularity build in the online library for public use
+
+Documented steps (future)
+ - Copied Singularity final definition file to sylabs, and started the build with the latest tag.
+ - Updated personal GitHub to include these logs as well as the Singularity definition file and renamed it to Conflibert-Singularity for those debugging in the future
+ - Created a directly followable set of steps for those attempting to build the Singularity file on their personal HPC server.
