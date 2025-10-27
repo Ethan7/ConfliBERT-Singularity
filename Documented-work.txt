@@ -70,6 +70,9 @@ RuntimeError: File cache_dir/cached_train_bert_512_2_2 cannot be opened
  - I then tested the GPU version with the same build and was able to run it as well on the juno server
  - After subsequent re-runs of the GPU version on the juno server, I found that the GPU version falls back to using the CPU, and is giving warnings such as "WARNING: Skipping mount /usr/bin/nvidia-smi [files]: /usr/bin/nvidia-smi doesn't exist in container" related to the linking with the Nvidia libraries it has.
  - Then I tried building the GPU version on the juno server with a GPU node, and it managed not to mention falling back to the CPU node, but it still gives the warning, and when running I get "Running in CPU-only mode. Training will be slower but compatible with systems without GPU."
+ - Later I noticed that we were running into a problem with it not moving past the first epoch, so I tried using the fix that was used previously which managed to work in docker involving importing multiprocessing. This resulted in several errors, and did not fix the epoch problem.
+ - From this I tried several things with Claude which didn't work, then I got Niamat involved, he used "--pwd /app" and "-B ./cache_dir:/app/cache_dir" and similar inserts for outputs and runs, which managed to make it so that I could run the script without the writable or fakeroot flags which created a temp sandbox, but was somehow corrupting the image files it used.
+ - From here I went back to trying to create a tutorial video using my virtualbox instance of ubuntu to run the commands from the github and show the output, but it somehow corrupted the virtualbox disk, so I had to create a new instance of ubuntu and start over with new tutorial footage.
 
 Finalizing the singularity build in the online library for public use
 
