@@ -221,19 +221,19 @@ For high-powered PCs without a modern GPU use finetune_data_cpu.py, and for trad
 ### Installation:
 ```bash
 #On linux:
-sudo apt update
-sudo apt install docker.io
+sudo apt update && \
+sudo apt install docker.io && \
 #On Windows:
 #Download and install the docker desktop installer from this website:
 #https://www.docker.com/products/docker-desktop/
 #On Both:
-docker pull zawad1879/conflibert:latest
+docker pull zawad1879/conflibert:latest && \
 #Don't use "--gpus all" if you'll be running the cpu version of the model (you don't have a gpu)
 docker create --gpus all --name conflibert_container zawad1879/conflibert:latest tail -f /dev/null #This command may require admin privileges (sudo)
 ```
 ### Run container:
 ```bash
-docker start conflibert_container
+docker start conflibert_container && \
 docker exec conflibert_container python3 finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch
 ```
 
@@ -243,23 +243,23 @@ More info can be found here: https://github.com/shreyasmeher/ConfliBERT-docker
 ## Evaluation: Using Singularity on Linux
 ### Installation:
 ```bash
-sudo apt update
+sudo apt update && \
 #Download the singularity installer for your linux version here (This version uses ubuntu version 24 noble):
 #https://github.com/sylabs/singularity/releases/download/v4.3.2/singularity-ce_4.3.2-noble_amd64.deb
 #To find more versions follow the link here:
 #https://github.com/sylabs/singularity/releases
-sudo dpkg -i singularity-ce_4.3.2-noble_amd64.deb #You can replace this with your version if it's different
+sudo dpkg -i singularity-ce_4.3.2-noble_amd64.deb #You can replace this with your version if it's different && \
 #if the previous command resulted in an incomplete installation due to missing packages:
-sudo apt install --fix-missing
-singularity pull library://ethan/ethan/conflibert.sif:latest
+sudo apt install --fix-missing && \
+singularity pull library://ethan/ethan/conflibert.sif:latest && \
 #The following could be necessary to rename the sif image file correctly:
 mv conflibert.sif_latest.sif conflibert.sif
 ```
 ### Run container:
 ```bash
-mkdir cache_dir
-mkdir outputs
-mkdir runs
+mkdir cache_dir && \
+mkdir outputs && \
+mkdir runs && \
 #You can add or remove the nv flag depending on whether you will be using NVIDIA graphics card(s).
 singularity exec --nv --pwd /app -B ./cache_dir:/app/cache_dir -B ./outputs:/app/outputs -B ./runs:/app/runs conflibert.sif bash -c "python3 finetune_data.py --dataset IndiaPoliceEvents_sents --report_per_epoch"
 ```
