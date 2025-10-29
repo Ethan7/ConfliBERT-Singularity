@@ -248,7 +248,7 @@ sudo apt update && \
 #https://github.com/sylabs/singularity/releases/download/v4.3.2/singularity-ce_4.3.2-noble_amd64.deb
 #To find more versions follow the link here:
 #https://github.com/sylabs/singularity/releases
-sudo dpkg -i singularity-ce_4.3.2-noble_amd64.deb #You can replace this with your version if it's different && \
+sudo dpkg -i singularity-ce_4.3.2-noble_amd64.deb && \ #You can replace this with your version if it's different
 #if the previous command resulted in an incomplete installation due to missing packages:
 sudo apt install --fix-missing && \
 singularity pull library://ethan/ethan/conflibert.sif:latest && \
